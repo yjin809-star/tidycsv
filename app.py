@@ -17,11 +17,21 @@ if uploaded_file is None:
     st.info("미리 볼 CSV 파일을 업로드해 주세요.")
 else:
     try:
-        dataframe = pd.read_csv(uploaded_file)
+        dataframe = pd.read_csv(uploaded_file, encoding="utf-8-sig")
+    except UnicodeDecodeError:
+        uploaded_file.seek(0)
+
+        try:
+            dataframe = pd.read_csv(uploaded_file, encoding="cp949")
+        except Exception:
+            dataframe = None
     except Exception:
+        dataframe = None
+
+    if dataframe is None:
         st.error(
             "CSV 파일을 읽지 못했습니다. "
-            "UTF-8로 저장된 올바른 CSV 파일인지 확인해 주세요."
+            "UTF-8 또는 CP949로 저장된 올바른 CSV 파일인지 확인해 주세요."
         )
     else:
         row_count, column_count = dataframe.shape

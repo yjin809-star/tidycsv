@@ -17,12 +17,20 @@ if uploaded_file is None:
     st.info("미리 볼 CSV 파일을 업로드해 주세요.")
 else:
     try:
-        dataframe = pd.read_csv(uploaded_file, encoding="utf-8-sig")
+        dataframe = pd.read_csv(
+            uploaded_file,
+            encoding="utf-8-sig",
+            skip_blank_lines=False,
+        )
     except UnicodeDecodeError:
         uploaded_file.seek(0)
 
         try:
-            dataframe = pd.read_csv(uploaded_file, encoding="cp949")
+            dataframe = pd.read_csv(
+                uploaded_file,
+                encoding="cp949",
+                skip_blank_lines=False,
+            )
         except Exception:
             dataframe = None
     except Exception:
@@ -39,5 +47,22 @@ else:
         st.success("CSV 파일을 정상적으로 읽었습니다.")
         st.write(f"전체 행 수: {row_count}")
         st.write(f"전체 열 수: {column_count}")
-        st.subheader("상위 20행 미리보기")
+        st.subheader("원본 데이터 상위 20행")
         st.dataframe(dataframe.head(20), width="stretch")
+
+        remove_empty_rows = st.checkbox("빈 행 제거")
+
+        cleaned_dataframe = dataframe.copy()
+
+        if remove_empty_rows:
+            cleaned_dataframe = cleaned_dataframe.dropna(how="all")
+
+        cleaned_row_count = len(cleaned_dataframe)
+        removed_row_count = row_count - cleaned_row_count
+
+        st.subheader("정리 결과")
+        st.write(f"정리 전 행 수: {row_count}")
+        st.write(f"정리 후 행 수: {cleaned_row_count}")
+        st.write(f"제거된 빈 행 수: {removed_row_count}")
+        st.subheader("정리된 데이터 상위 20행")
+        st.dataframe(cleaned_dataframe.head(20), width="stretch")

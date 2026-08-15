@@ -51,18 +51,29 @@ else:
         st.dataframe(dataframe.head(20), width="stretch")
 
         remove_empty_rows = st.checkbox("빈 행 제거")
+        remove_duplicate_rows = st.checkbox("중복 행 제거")
 
         cleaned_dataframe = dataframe.copy()
 
         if remove_empty_rows:
             cleaned_dataframe = cleaned_dataframe.dropna(how="all")
 
+        removed_empty_row_count = row_count - len(cleaned_dataframe)
+
+        row_count_before_duplicate_removal = len(cleaned_dataframe)
+
+        if remove_duplicate_rows:
+            cleaned_dataframe = cleaned_dataframe.drop_duplicates(keep="first")
+
         cleaned_row_count = len(cleaned_dataframe)
-        removed_row_count = row_count - cleaned_row_count
+        removed_duplicate_row_count = (
+            row_count_before_duplicate_removal - cleaned_row_count
+        )
 
         st.subheader("정리 결과")
         st.write(f"정리 전 행 수: {row_count}")
         st.write(f"정리 후 행 수: {cleaned_row_count}")
-        st.write(f"제거된 빈 행 수: {removed_row_count}")
+        st.write(f"제거된 빈 행 수: {removed_empty_row_count}")
+        st.write(f"제거된 중복 행 수: {removed_duplicate_row_count}")
         st.subheader("정리된 데이터 상위 20행")
         st.dataframe(cleaned_dataframe.head(20), width="stretch")

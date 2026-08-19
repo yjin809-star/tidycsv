@@ -121,6 +121,12 @@ Codex의 대화 기억을 프로젝트의 공식 기록으로 사용하지 않�
 
 이 작업은 사용자의 명시적인 시작 요청 전에는 구현하지 않는다.
 
+## Current Learning Method
+
+Implement → Run → Read Code → Understand Concepts → Quiz → Edit → Commit → Push
+
+목표는 빠른 개발이 아니라, 기능 하나를 만들 때마다 코드 흐름과 핵심 개념을 이해하면서 개발 실력을 쌓는 것이다.
+
 ## Last Update
 
 2026-08-19

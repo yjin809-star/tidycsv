@@ -52,6 +52,7 @@ else:
 
         remove_empty_rows = st.checkbox("빈 행 제거")
         remove_duplicate_rows = st.checkbox("중복 행 제거")
+        remove_surrounding_whitespace = st.checkbox("앞뒤 공백 제거")
 
         cleaned_dataframe = dataframe.copy()
 
@@ -65,6 +66,17 @@ else:
         if remove_duplicate_rows:
             cleaned_dataframe = cleaned_dataframe.drop_duplicates(keep="first")
 
+        trimmed_cell_count = 0
+
+        if remove_surrounding_whitespace:
+            cells_with_surrounding_whitespace = cleaned_dataframe.map(
+                lambda value: isinstance(value, str) and value != value.strip()
+            )
+            trimmed_cell_count = int(cells_with_surrounding_whitespace.sum().sum())
+            cleaned_dataframe = cleaned_dataframe.map(
+                lambda value: value.strip() if isinstance(value, str) else value
+            )
+
         cleaned_row_count = len(cleaned_dataframe)
         removed_duplicate_row_count = (
             row_count_before_duplicate_removal - cleaned_row_count
@@ -75,5 +87,6 @@ else:
         st.write(f"정리 후 행 수: {cleaned_row_count}")
         st.write(f"제거된 빈 행 수: {removed_empty_row_count}")
         st.write(f"제거된 중복 행 수: {removed_duplicate_row_count}")
-        st.subheader("정리된 데이터 상위 20행")
+        st.write(f"앞뒤 공백이 제거된 셀 수: {trimmed_cell_count}")
+        st.subheader("데이터 정리 상위 20행")
         st.dataframe(cleaned_dataframe.head(20), width="stretch")

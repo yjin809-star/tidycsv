@@ -27,6 +27,10 @@ MVP 개발
 - 숫자 값과 자료형 유지
 - 앞뒤 공백이 제거된 셀 수 표시
 - 빈 행, 중복 행, 앞뒤 공백 제거 동시 사용
+- 빈 문자열을 pandas 결측값으로 정리
+- 앞뒤 공백 제거 후 비어 있는 문자열도 결측값으로 정리
+- 결측값으로 정리된 셀 수 표시
+- 빈 행, 중복 행, 앞뒤 공백 제거, 빈 문자열 정리 동시 사용
 - 원본 DataFrame 보존
 - 작업용 DataFrame 복사본 사용
 
@@ -86,6 +90,18 @@ pandas가 CSV를 읽어 프로그램에서 다룰 수 있도록 만든 표 형�
 
 DataFrame의 각 셀에 같은 검사나 변환을 적용한다.
 
+### 빈 문자열
+
+문자열 안에 글자가 하나도 없는 `""` 값을 뜻한다.
+
+### pd.NA
+
+pandas에서 값이 없다는 것을 나타내는 결측값이다.
+
+### replace()
+
+DataFrame 안에서 특정 값을 찾아 다른 값으로 바꾼다.
+
 ## Current Understanding
 
 사용자는 현재 다음 개념을 기본적으로 이해하고 있다.
@@ -98,6 +114,8 @@ DataFrame의 각 셀에 같은 검사나 변환을 적용한다.
 - 문자열과 숫자 데이터가 서로 다른 종류라는 점
 - `strip()`이 앞뒤 공백만 제거하고 내부 공백은 유지한다는 점
 - `isinstance(value, str)`가 문자열 여부를 확인한다는 점
+- 공백만 있는 문자열은 `strip()` 후 빈 문자열이 될 수 있다는 점
+- CSV를 읽을 때부터 비어 있던 셀은 이미 결측값일 수 있다는 점
 
 아직 Python 문법이나 코드 전체 구조에는 익숙하지 않다.
 
@@ -139,10 +157,12 @@ Codex의 대화 기억을 프로젝트의 공식 기록으로 사용하지 않�
 
 ## Current Learning Method
 
-Implement → Run → Read Code → Understand Concepts → Quiz → Edit → Commit → Push
+Understand Feature → Show Core Code → User Types Code → Review → Run → Understand Concepts → Quiz → Edit → Commit → Push
 
 목표는 빠른 개발이 아니라, 기능 하나를 만들 때마다 코드 흐름과 핵심 개념을 이해하면서 개발 실력을 쌓는 것이다.
 
+다음 기능부터 오늘 배우는 핵심 코드는 Codex가 위치와 코드를 안내하고 사용자가 VS Code에서 직접 입력한다.
+
 ## Last Update
 
-2026-08-19
+2026-08-20

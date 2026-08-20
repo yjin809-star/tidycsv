@@ -53,18 +53,9 @@ else:
         remove_empty_rows = st.checkbox("빈 행 제거")
         remove_duplicate_rows = st.checkbox("중복 행 제거")
         remove_surrounding_whitespace = st.checkbox("앞뒤 공백 제거")
+        normalize_empty_strings = st.checkbox("빈 문자열 정리")
 
         cleaned_dataframe = dataframe.copy()
-
-        if remove_empty_rows:
-            cleaned_dataframe = cleaned_dataframe.dropna(how="all")
-
-        removed_empty_row_count = row_count - len(cleaned_dataframe)
-
-        row_count_before_duplicate_removal = len(cleaned_dataframe)
-
-        if remove_duplicate_rows:
-            cleaned_dataframe = cleaned_dataframe.drop_duplicates(keep="first")
 
         trimmed_cell_count = 0
 
@@ -77,6 +68,29 @@ else:
                 lambda value: value.strip() if isinstance(value, str) else value
             )
 
+        normalized_empty_cell_count = 0
+
+        if normalize_empty_strings:
+            empty_string_cells = cleaned_dataframe.map(
+                lambda value: isinstance(value, str) and value == ""
+            )
+            normalized_empty_cell_count = int(empty_string_cells.sum().sum())
+            cleaned_dataframe = cleaned_dataframe.replace("", pd.NA)
+
+        row_count_before_empty_row_removal = len(cleaned_dataframe)
+
+        if remove_empty_rows:
+            cleaned_dataframe = cleaned_dataframe.dropna(how="all")
+
+        removed_empty_row_count = (
+            row_count_before_empty_row_removal - len(cleaned_dataframe)
+        )
+
+        row_count_before_duplicate_removal = len(cleaned_dataframe)
+
+        if remove_duplicate_rows:
+            cleaned_dataframe = cleaned_dataframe.drop_duplicates(keep="first")
+
         cleaned_row_count = len(cleaned_dataframe)
         removed_duplicate_row_count = (
             row_count_before_duplicate_removal - cleaned_row_count
@@ -88,5 +102,9 @@ else:
         st.write(f"제거된 빈 행 수: {removed_empty_row_count}")
         st.write(f"제거된 중복 행 수: {removed_duplicate_row_count}")
         st.write(f"앞뒤 공백이 제거된 셀 수: {trimmed_cell_count}")
+        st.write(
+            f"빈 문자열이 결측값으로 정리된 셀 수: "
+            f"{normalized_empty_cell_count}"
+        )
         st.subheader("데이터 정리 상위 20행")
         st.dataframe(cleaned_dataframe.head(20), width="stretch")
